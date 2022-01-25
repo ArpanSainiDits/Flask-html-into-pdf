@@ -8,7 +8,7 @@ class Profile(db.Model):
 
     __tablename__ = "files"
     id = db.Column(db.Integer, primary_key=True)
-    file = db.Column(db.FileField, nullable=False)
+    file = db.Column(db.FileField)
     created = db.Column(db.DateTime)
     updated = db.Column(db.DateTime)
 
@@ -29,3 +29,5 @@ class Profile(db.Model):
     def allowed_file(filename):
         return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+

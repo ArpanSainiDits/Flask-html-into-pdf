@@ -1,24 +1,18 @@
 from flask_restful import Resource
 import pdfkit
-from flask import render_template, make_response, request
+from flask import jsonify, request
 
-from models.pdf import *
+
 
 from db import db
 
 class htmlPdf(Resource):
     
-    def post(self, name, location):
-        file = request.json['file']
+    def post(self, fName):
+        html = request.json.get('html')
         
-        profile = Profile(file)
-        db.session.add(profile)
-        db.session.commit()
-        print("---------->", profile)
-        
-        rendered = render_template('a.html', name=name, location=location)
-        pdf = pdfkit.from_string(rendered, False)
-        response = make_response(pdf)
-        response.headers['Content-Type'] = 'application/pdf'
-        response.headers['Content-Disposition'] = 'attachment; filename=output.pdf'
-        return response
+        config = pdfkit.configuration(
+            wkhtmltopdf="C:\Program Files\wkhtmltopdf\\bin\wkhtmltopdf.exe")
+        pdfkit.from_string(html, fName+".pdf", configuration=config)
+        return jsonify({'status': 'Pdf successfully generated',
+                        'click on this link for view': f"C:\projects\Flask html into pdf/{fName}.pdf"})
